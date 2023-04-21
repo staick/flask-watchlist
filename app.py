@@ -75,11 +75,16 @@ def make_shell_context():
     return {"db": db}
 
 
+@app.context_processor
+def inject_user():
+    user = User.query.first()
+    return dict(user=user)
+
+
 @app.route("/")
 def index():
-    user = User.query.first()
     movies = Movie.query.all()
-    return render_template("index.html", user=user, movies=movies)
+    return render_template("index.html", movies=movies)
 
 
 @app.route("/home")
@@ -100,3 +105,8 @@ def test_url_for():
     print(url_for("test_url_for"))
     print(url_for("test_url_for", num="2"))
     return "Test page"
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template("404.html"), 404
