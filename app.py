@@ -67,7 +67,7 @@ def initdb(drop):
     if drop:
         db.drop_all()
     db.create_all()
-    click.echo("Initialize database.")
+    click.echo("Initialized database.")
 
 
 @app.cli.command()
@@ -145,7 +145,7 @@ def index():
         title = request.form.get("title")
         year = request.form.get("year")
         if not title or not year or len(year) > 4 or len(title) > 60:
-            flash("Invalid input")
+            flash("Invalid input.")
             return redirect(url_for("index"))
         movie = Movie(title=title, year=year)
         db.session.add(movie)
@@ -164,7 +164,7 @@ def login():
         password = request.form["password"]
 
         if not username or not password:
-            flash("Invlid input.")
+            flash("Invalid input.")
             return redirect(url_for("login"))
 
         user = User.query.first()
@@ -185,7 +185,7 @@ def settings():
         name = request.form["name"]
 
         if not name or len(name) > 20:
-            flash("Invalid input")
+            flash("Invalid input.")
             return redirect(url_for("settings"))
         current_user.name = name  # current_user返回当前登陆用户的数据库记录对象
         db.session.commit()
@@ -213,7 +213,7 @@ def edit(movie_id):
         year = request.form["year"]
 
         if not title or not year or len(year) > 4 or len(title) > 60:
-            flash("Invalid input")
+            flash("Invalid input.")
             return redirect(url_for("index"))
         movie.title = title
         movie.year = year
@@ -230,7 +230,7 @@ def delete(movie_id):
     movie = Movie.query.get_or_404(movie_id)
     db.session.delete(movie)
     db.session.commit()
-    flash("Item deleted")
+    flash("Item deleted.")
     return redirect(url_for("index"))
 
 

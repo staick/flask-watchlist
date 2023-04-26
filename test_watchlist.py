@@ -6,7 +6,7 @@ from app import app, db, Movie, User, forge, initdb
 class WatchlistTestCase(unittest.TestCase):
     def setUp(self):
         # Update config
-        app.config.update(TESTING=True, SQLALCHEMY_DATABASE_URI="sqlite:////:memory:")
+        app.config.update(TESTING=True, SQLALCHEMY_DATABASE_URI="sqlite:///:memory:")
         # Create database and table
         db.create_all()
         # Create test data, a user and a movie item
@@ -65,14 +65,14 @@ class WatchlistTestCase(unittest.TestCase):
         self.assertIn("New Movie", data)
 
         response = self.client.post(
-            "/", data=dict(title="", year="2019"), follow_directs=True
+            "/", data=dict(title="", year="2019"), follow_redirects=True
         )
         data = response.get_data(as_text=True)
         self.assertNotIn("Item created.", data)
         self.assertIn("Invalid input.", data)
 
         response = self.client.post(
-            "/", data=dict(title="New Movie", year=""), follow_directs=True
+            "/", data=dict(title="New Movie", year=""), follow_redirects=True
         )
         data = response.get_data(as_text=True)
         self.assertNotIn("Item created.", data)
@@ -145,6 +145,7 @@ class WatchlistTestCase(unittest.TestCase):
         response = self.client.post(
             "/login", data=dict(username="test", password="456"), follow_redirects=True
         )
+        data = response.get_data(as_text=True)
         self.assertNotIn("Login success.", data)
         self.assertIn("Invalid username or password.", data)
 
@@ -157,12 +158,14 @@ class WatchlistTestCase(unittest.TestCase):
         response = self.client.post(
             "/login", data=dict(username="", password="123"), follow_redirects=True
         )
+        data = response.get_data(as_text=True)
         self.assertNotIn("Login success.", data)
         self.assertIn("Invalid input.", data)
 
         response = self.client.post(
             "/login", data=dict(username="test", password=""), follow_redirects=True
         )
+        data = response.get_data(as_text=True)
         self.assertNotIn("Login success.", data)
         self.assertIn("Invalid input.", data)
 
@@ -191,18 +194,18 @@ class WatchlistTestCase(unittest.TestCase):
             data=dict(
                 name="Grey Li",
             ),
-            follow_directs=True,
+            follow_redirects=True,
         )
         data = response.get_data(as_text=True)
         self.assertIn("Settings updated.", data)
-        self.assertIn("Gray Li", data)
+        self.assertIn("Grey Li", data)
 
         response = self.client.post(
             "/settings",
             data=dict(
                 name="",
             ),
-            follow_directs=True,
+            follow_redirects=True,
         )
         data = response.get_data(as_text=True)
         self.assertNotIn("Setting updated.", data)
